@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "python-template"
-version = "1.0.0"
-description = ""
+name = "rolldet"
+version = "0.1.0"
+description = "Rickroll Detector"
 authors = ["ionite34 <dev@ionite.io>"]
 
 [tool.poetry.dependencies]
