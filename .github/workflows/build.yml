@@ -1,0 +1,18 @@
+name: Build
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  coverage:
+    uses: ./.github/workflows/coverage.yml
+    secrets: inherit
+  license:
+    uses: ./.github/workflows/license.yml
+    secrets: inherit
+  tests:
+    needs: coverage
+    uses: ./.github/workflows/tests.yml
