@@ -88,10 +88,10 @@ class Detector:
         """Parse YouTube web response to ytInitialData dict"""
         match = RE_YT_DATA.search(response_text)
 
-        if not match or not (m := match.group()):
+        if not match or not match.group():
             return None
 
-        result = m.split(";<")
+        result = match.group().split(";<")
         parsable = result[0].strip() if result else None
 
         if parsable:
