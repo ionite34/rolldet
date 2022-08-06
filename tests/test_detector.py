@@ -44,6 +44,35 @@ async def detector() -> AsyncGenerator[Detector, None]:
                 "is_roll": False,
             },
         ),
+        (
+            [  # Expect 404
+                "https://www.google.com/404",
+            ],
+            {
+                "is_roll": False,
+                "error": "404",
+            },
+        ),
+        (
+            [  # Expect no domain
+                "https://unknown.example.org/",
+            ],
+            {
+                "is_roll": False,
+                "error": "Could not connect to host",
+            },
+        ),
+        (
+            [  # Expect no data, since short
+                "https://www.youtube.com/shorts/96GnOB1iZQI",
+                # No video at URL
+                "https://www.youtube.com/watch?v=vAV0Q-pq_L",
+            ],
+            {
+                "is_roll": False,
+                "error": "Could not find YouTube data",
+            },
+        ),
     ],
 )
 async def test_detector_results(
