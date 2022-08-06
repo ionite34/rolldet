@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import AsyncGenerator, Iterable
 
 import pytest
@@ -44,6 +46,35 @@ async def detector() -> AsyncGenerator[Detector, None]:
                 "is_roll": False,
             },
         ),
+        (
+            [  # Expect 404
+                "https://www.google.com/404",
+            ],
+            {
+                "is_roll": False,
+                "error": "404",
+            },
+        ),
+        (
+            [  # Expect no domain
+                "https://unknown.example.org/",
+            ],
+            {
+                "is_roll": False,
+                "error": "Could not connect to host",
+            },
+        ),
+        (
+            [  # Expect no data, since short
+                "https://www.youtube.com/shorts/96GnOB1iZQI",
+                # No video at URL
+                "https://www.youtube.com/watch?v=vAV0Q-pq_L",
+            ],
+            {
+                "is_roll": False,
+                "error": "Could not find YouTube data",
+            },
+        ),
     ],
 )
 async def test_detector_results(
@@ -70,3 +101,16 @@ async def test_detector_invalid(detector: Detector) -> None:
         '"is_roll": false, '
         '"error": "Unsupported Link Type"}'
     )
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("var ytInitialData = {};<", {}),  # Normal empty data
+        ("example", None),  # No regex match
+        ("var ytInitialData = A;<", None),  # JSONDecodeError case
+        ("var ytInitialData =;<", None),  # No data case
+    ],
+)
+def test_parse_youtube(text: str, expected: str | None) -> None:
+    assert Detector._parse_youtube(text) == expected

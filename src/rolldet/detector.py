@@ -4,7 +4,7 @@ import json
 import re
 from typing import Any
 
-from httpx import URL, AsyncClient
+from httpx import URL, AsyncClient, ConnectError
 
 from rolldet.result import DetectResult
 from rolldet.target import Target, TargetType
@@ -21,18 +21,17 @@ INFO_PATH = (
 
 
 class Detector:
+    """Analyze links for rick-roll detection"""
+
     def __init__(self) -> None:
         self.client = AsyncClient()
 
     @staticmethod
     def _determine_result(song: str, artist: str) -> bool:
         """Determine from song and artist if this is a valid match"""
-        if (
-            "rick astley" in artist.lower()
-            and "never gonna give you up" in song.lower()
-        ):
-            return True
-        return False
+        song = song.lower()
+        artist = artist.lower()
+        return "rick astley" in artist and "never gonna give you up" in song
 
     @staticmethod
     def _get_song_info(info_rows: list) -> dict:
@@ -103,11 +102,20 @@ class Detector:
         return None  # If none found
 
     async def find(self, url: str) -> DetectResult:
+        """
+        Find if a URL is a rick-roll.
+
+        Args:
+            url: URL to check
+        """
         result = DetectResult(URL(url))
         target = Target(URL(url))
-        response = await self.client.get(target.url, follow_redirects=True)
 
-        # If 404
+        try:
+            response = await self.client.get(target.url, follow_redirects=True)
+        except ConnectError:
+            return result.with_error("Could not connect to host")
+
         if response.status_code == 404:
             return result.with_error("404")
 
