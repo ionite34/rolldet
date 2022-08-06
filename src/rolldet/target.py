@@ -23,6 +23,8 @@ class TargetType(Enum):
 
 @dataclass
 class Target:
+    """Target URL for analysis."""
+
     url: URL
 
     @cached_property

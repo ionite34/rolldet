@@ -21,6 +21,8 @@ INFO_PATH = (
 
 
 class Detector:
+    """Analyze links for rick-roll detection"""
+
     def __init__(self) -> None:
         self.client = AsyncClient()
 
@@ -100,6 +102,12 @@ class Detector:
         return None  # If none found
 
     async def find(self, url: str) -> DetectResult:
+        """
+        Find if a URL is a rick-roll.
+
+        Args:
+            url: URL to check
+        """
         result = DetectResult(URL(url))
         target = Target(URL(url))
 
