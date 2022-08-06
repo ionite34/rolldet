@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rolldet"
-version = "0.1.0"
+version = "0.1.1"
 description = "Rickroll Detector"
 authors = ["ionite34 <dev@ionite.io>"]
 
