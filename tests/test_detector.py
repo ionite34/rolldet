@@ -9,7 +9,7 @@ from rolldet.detector import Detector
 
 
 @pytest_asyncio.fixture
-async def detector() -> AsyncGenerator[Detector, None]:
+async def detector() -> AsyncGenerator[Detector]:
     yield Detector()
 
 
